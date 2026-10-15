@@ -604,8 +604,10 @@ function apply() {
 }
 sbtns.forEach(b => b.addEventListener('click', () => {
   if (b.dataset.state === 'deep') {
-    deepFilter = !deepFilter;
-    b.classList.toggle('active', deepFilter);
+    sbtns.forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    stateFilter = 'all';
+    deepFilter = true;
   } else {
     sbtns.forEach(x => x.classList.remove('active'));
     b.classList.add('active');
