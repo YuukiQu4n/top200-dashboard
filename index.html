@@ -617,9 +617,9 @@ function injectMobileFold() {
     lb.className = 'pd-btn';
     lb.htmlFor = cb.id;
     lb.innerHTML = '<span class="pd-t-open">展开' + btnText + '</span><span class="pd-t-close">收起</span>';
+    root.appendChild(more);
     root.insertBefore(cb, more);
     root.insertBefore(lb, more);
-    root.appendChild(more);
   };
   pdBody.querySelectorAll('.case-card').forEach(c => foldChildren(c, '.cc-head, .price-tag', '分析'));
   pdBody.querySelectorAll('.shop-card').forEach(c => foldChildren(c, '.shop-head', '详情'));
