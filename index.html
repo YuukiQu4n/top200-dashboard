@@ -211,6 +211,28 @@ footer .row { display:flex; justify-content:space-between; gap:20px; flex-wrap:w
   .stats { grid-template-columns: repeat(2, 1fr); }
   .d-kpis { grid-template-columns: repeat(2, 1fr); }
   .wrap { padding:0 20px; }
+
+  /* TOP200 榜单：手机端仅保留 排名+店铺名 两列，其余指标移入点击抽屉查看 */
+  table.list { min-width: 0; width: 100%; }
+  table.list thead th:nth-child(2), table.list thead th:nth-child(4),
+  table.list thead th:nth-child(5), table.list thead th:nth-child(6),
+  table.list thead th:nth-child(7),
+  table.list tbody td:nth-child(2), table.list tbody td:nth-child(4),
+  table.list tbody td:nth-child(5), table.list tbody td:nth-child(6),
+  table.list tbody td:nth-child(7) { display: none; }
+  table.list th, table.list td { white-space: normal; }
+  table.list td.rank { padding-right: 4px; }
+  table.list td.name { padding-left: 8px; }
+
+  /* 爆款记录：手机端默认折叠大段分析，点击"展开"再查看 */
+  .pd-toggle { position: absolute; opacity: 0; pointer-events: none; }
+  .pd-btn { display: inline-flex; align-items: center; gap: 6px; margin: 2px 0 12px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: oklch(1 0 0 / 0.85); color: var(--ink-soft); font-size: 13px; font-family: inherit; cursor: pointer; }
+  .pd-btn .pd-t-close { display: none; }
+  .pd-toggle:checked ~ .pd-btn .pd-t-open { display: none; }
+  .pd-toggle:checked ~ .pd-btn .pd-t-close { display: inline; }
+  .pd-more { display: none; }
+  .pd-toggle:checked ~ .pd-more { display: block; }
+  .pd-toggle:checked ~ .pd-more .ana-grid { margin-top: 10px; }
 }
 
 /* ===== 手机端适配层（仅窄屏生效，桌面样式零改动） ===== */
@@ -236,7 +258,7 @@ footer .row { display:flex; justify-content:space-between; gap:20px; flex-wrap:w
   .sec-head p { font-size: 14px; }
 
   /* 4) 榜单表格：保持横向滚动容器可用，避免内容溢出截断 */
-  table.list { font-size: 13px; min-width: 620px; }
+  table.list { font-size: 13px; min-width: 0; width: 100%; }
   table.list th, table.list td { padding: 11px 12px; }
   .toolbar input { min-width: 0; max-width: none; flex: 1 1 100%; }
 
@@ -626,10 +648,42 @@ function openPeriod(n) {
   pdTitle.textContent = p.title;
   pdSub.textContent = p.sub;
   pdBody.innerHTML = p.html;
+  injectMobileFold();
   pdWrap.classList.remove('closing');
   pdWrap.style.display = '';
   calWrap.style.display = 'none';
   window.scrollTo({ top:0, behavior:'smooth' });
+}
+function injectMobileFold() {
+  if (!window.matchMedia('(max-width: 960px)').matches) return;
+  if (pdBody.querySelector('.pd-toggle')) return;
+  let uid = 0;
+  const foldChildren = (root, keepSel, btnText) => {
+    const more = document.createElement('div');
+    more.className = 'pd-more';
+    Array.prototype.slice.call(root.children).forEach(el => {
+      if (el.matches(keepSel)) return;
+      more.appendChild(el);
+    });
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.className = 'pd-toggle';
+    cb.id = 'pd-f-' + (++uid);
+    const lb = document.createElement('label');
+    lb.className = 'pd-btn';
+    lb.htmlFor = cb.id;
+    lb.innerHTML = '<span class="pd-t-open">展开' + btnText + '</span><span class="pd-t-close">收起</span>';
+    root.insertBefore(cb, more);
+    root.insertBefore(lb, more);
+    root.appendChild(more);
+  };
+  pdBody.querySelectorAll('.case-card').forEach(c => foldChildren(c, '.cc-head, .price-tag', '分析'));
+  pdBody.querySelectorAll('.shop-card').forEach(c => foldChildren(c, '.shop-head', '详情'));
+  const secs = pdBody.querySelectorAll('.r-section');
+  const lastSec = secs[secs.length - 1];
+  if (lastSec && lastSec.querySelector('ul.ana-grid')) {
+    foldChildren(lastSec, '.r-section h3', '共性观察');
+  }
 }
 function closePeriod() {
   if (pdWrap.dataset.closing) return;
