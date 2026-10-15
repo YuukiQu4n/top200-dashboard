@@ -645,7 +645,7 @@ function openPeriod(n) {
   pdTitle.textContent = p.title;
   pdSub.textContent = p.sub;
   pdBody.innerHTML = p.html;
-  injectMobileFold();
+  try { injectMobileFold(); } catch (e) { console.error('fold inject failed:', e); }
   pdWrap.classList.remove('closing');
   pdWrap.style.display = '';
   calWrap.style.display = 'none';
@@ -662,6 +662,7 @@ function injectMobileFold() {
       if (el.matches(keepSel)) return;
       more.appendChild(el);
     });
+    root.appendChild(more);
     const cb = document.createElement('input');
     cb.type = 'checkbox';
     cb.className = 'pd-toggle';
@@ -672,7 +673,6 @@ function injectMobileFold() {
     lb.innerHTML = '<span class="pd-t-open">展开' + btnText + '</span><span class="pd-t-close">收起</span>';
     root.insertBefore(cb, more);
     root.insertBefore(lb, more);
-    root.appendChild(more);
   };
   pdBody.querySelectorAll('.case-card').forEach(c => foldChildren(c, '.cc-head, .price-tag', '分析'));
   pdBody.querySelectorAll('.shop-card').forEach(c => foldChildren(c, '.shop-head', '详情'));
