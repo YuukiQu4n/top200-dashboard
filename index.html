@@ -212,6 +212,62 @@ footer .row { display:flex; justify-content:space-between; gap:20px; flex-wrap:w
   .d-kpis { grid-template-columns: repeat(2, 1fr); }
   .wrap { padding:0 20px; }
 }
+
+/* ===== 手机端适配层（仅窄屏生效，桌面样式零改动） ===== */
+@media (max-width: 480px) {
+  /* 2) 导航/页签可换行 */
+  .nav-in { flex-wrap: wrap; height: auto; gap: 6px 12px; padding: 10px 0; }
+  .nav-links { flex-wrap: wrap; }
+  .nav-tab { min-height: 40px; }
+
+  /* 3) Hero 与统计卡片单列堆叠 */
+  .hero { padding: 40px 0 26px; }
+  .hero.small { padding: 28px 0 18px; }
+  .hero h1 { font-size: clamp(1.7rem, 8vw, 2.2rem); }
+  .hero .sub { font-size: 15px; }
+  .stats { grid-template-columns: 1fr; gap: 10px; margin-top: 26px; }
+  .stat { display: flex; align-items: baseline; justify-content: space-between; background: oklch(1 0 0 / 0.6); border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px; }
+  .stat .num { font-size: 1.5rem; }
+  .stat .lab { margin-top: 0; }
+
+  .wrap { padding: 0 16px; }
+  section { padding: 38px 0; }
+  .sec-head { margin-bottom: 18px; }
+  .sec-head p { font-size: 14px; }
+
+  /* 4) 榜单表格：保持横向滚动容器可用，避免内容溢出截断 */
+  table.list { font-size: 13px; min-width: 620px; }
+  table.list th, table.list td { padding: 11px 12px; }
+  .toolbar input { min-width: 0; max-width: none; flex: 1 1 100%; }
+
+  /* 7) 筛选/返回按钮可点区域 ≥ 40px */
+  .f-btn, .back-btn { min-height: 40px; display: inline-flex; align-items: center; }
+  .f-btn { padding: 10px 16px; }
+
+  /* 5) 千瓜式抽屉：窄屏全屏（面板内部滚动与 body 锁滚动沿用原逻辑） */
+  .detail-panel { width: 100%; max-width: 100%; box-shadow: none; }
+  .detail-in { padding: 24px 20px 56px; }
+  .d-head h2 { font-size: 1.3rem; }
+  .d-kpis { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kpi { padding: 14px; }
+  .d-card { padding: 16px; }
+
+  /* 6) 爆款记录期详情：头部单列、对比表格横向滚动 */
+  .period-head { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .period-head > div:last-child { text-align: left; }
+  .cmp-wrap { overflow-x: auto; }
+  .cmp-wrap table { min-width: 640px; }
+  .cal-cell { padding: 20px 18px; }
+  .cal-no { font-size: 1.25rem; }
+  .shop-card, .case-card, .ana-grid li { padding: 22px 18px; }
+  .shop-grid, .ana-grid { gap: 18px; }
+  .price-tag { font-size: 15px; }
+
+  /* 8) 正文不低于 13px，保持窄屏可读 */
+  .why-list li, .cc-detail, .d-card p, .shop-card .sec p, .ana-grid li p { font-size: 14px; }
+  .cc-note, .d-note, .d-source, .shop-head .meta, .cc-meta, .cal-batch, .hint, footer { font-size: 13px; }
+  .d-card .tag-line span { min-width: 72px; font-size: 13px; }
+}
 </style>
 </head>
 <body>
