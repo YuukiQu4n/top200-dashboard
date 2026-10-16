@@ -243,30 +243,49 @@ footer .row { display:flex; justify-content:space-between; gap:20px; flex-wrap:w
 .time-btn { padding:8px 14px; }
 .f-date { padding:8px 12px; border-radius:12px; border:1px solid var(--line); background:oklch(1 0 0 / 0.8); font-size:13px; font-family:inherit; color:var(--ink-soft); outline:none; cursor:pointer; transition: border .2s, box-shadow .2s; }
 .f-date:focus { border-color: var(--brand); box-shadow: 0 0 0 4px oklch(0.42 0.11 155 / 0.12); }
-#dateHint { white-space:nowrap; }
 #emptyDate { padding:44px 20px; text-align:center; color:var(--ink-soft); font-size:15px; line-height:1.8; }
-@media (max-width: 960px) {
-  #dateHint { display:none; }
-}
-/* v11 点选式范围日历 */
+/* v12 现代风点选式范围日历 */
 .cal-wrap { position:relative; }
-.cal-panel { position:absolute; z-index:30; top:calc(100% + 6px); left:0; width:288px; background:oklch(1 0 0 / 0.98); border:1px solid var(--line); border-radius:16px; box-shadow:0 12px 32px oklch(0 0 0 / .14); padding:12px; }
-.cal-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
-.cal-head button { background:none; border:none; font-size:18px; cursor:pointer; padding:2px 10px; color:var(--ink-soft); }
-.cal-title { font-weight:600; font-size:14px; }
+.cal-panel { position:absolute; z-index:30; top:calc(100% + 8px); left:0; width:304px; background:#fff; border:1px solid oklch(0.92 0 0); border-radius:20px; box-shadow:0 24px 56px -16px oklch(0 0 0 / .22), 0 8px 20px -8px oklch(0 0 0 / .14); padding:16px; }
+.cal-panel.cal-open { animation: calIn .22s cubic-bezier(.2,.7,.3,1) both; }
+.cal-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.cal-head button { background:none; border:none; font-size:18px; cursor:pointer; padding:4px 10px; color:var(--ink-soft); border-radius:10px; transition:background .18s ease, color .18s ease; line-height:1; }
+.cal-head button:hover { background:oklch(0.96 0 0); color:var(--brand); }
+.cal-title { font-weight:700; font-size:14px; letter-spacing:.5px; }
 .cal-week, .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
-.cal-week span { text-align:center; font-size:11px; color:var(--ink-faint); padding:4px 0; }
-.cal-day { aspect-ratio:1; border:none; background:none; border-radius:8px; font-size:13px; color:var(--ink); cursor:pointer; }
-.cal-day:hover { background:oklch(0.95 0 0); }
-.cal-out { color:var(--ink-faint); }
-.cal-start { background:var(--brand); color:#fff; border-radius:50% 0 0 50%; }
-.cal-end { background:var(--brand); color:#fff; border-radius:0 50% 50% 0; }
-.cal-single { background:var(--brand); color:#fff; border-radius:50%; }
-.cal-between { background:oklch(0.42 0.11 155 / 0.14); border-radius:0; }
-.cal-anchor { box-shadow: inset 0 0 0 2px var(--brand); }
-.cal-foot { display:flex; align-items:center; gap:8px; margin-top:8px; }
-.cal-foot button { border:none; background:none; color:var(--brand); font-size:12px; cursor:pointer; padding:4px 6px; }
+.cal-week { margin-bottom:4px; padding-bottom:8px; border-bottom:1px solid oklch(0.95 0 0); }
+.cal-week span { text-align:center; font-size:11px; color:var(--ink-faint); padding:4px 0; font-weight:600; }
+.cal-week span:nth-child(1), .cal-week span:nth-child(7) { color:oklch(0.42 0.11 155 / .65); }
+.cal-grid.cal-fade { animation: calFade .22s ease both; }
+.cal-grid.cal-slide-left { animation: calLeft .24s cubic-bezier(.2,.7,.3,1) both; }
+.cal-grid.cal-slide-right { animation: calRight .24s cubic-bezier(.2,.7,.3,1) both; }
+.cal-day { aspect-ratio:1; border:none; background:none; border-radius:10px; font-size:13px; color:var(--ink); cursor:pointer; transition:background .18s ease, color .18s ease, transform .15s ease, box-shadow .18s ease; }
+.cal-day:not(.cal-start):not(.cal-end):not(.cal-single):not(.cal-between):hover { background:oklch(0.965 0 0); transform:scale(1.07); }
+.cal-day:not(.cal-start):not(.cal-end):not(.cal-single):not(.cal-between):active { transform:scale(.97); }
+.cal-out { color:oklch(0.55 0 0 / .5); }
+.cal-out:hover { background:transparent !important; transform:none !important; color:oklch(0.55 0 0 / .6); }
+.cal-wknd { color:oklch(0.42 0.11 155 / .72); font-weight:600; }
+.cal-wknd.cal-start, .cal-wknd.cal-end, .cal-wknd.cal-single { color:#fff; }
+.cal-anchor { position:relative; box-shadow:inset 0 0 0 1.5px oklch(0.42 0.11 155 / .4); }
+.cal-anchor::after { content:''; position:absolute; top:5px; right:5px; width:5px; height:5px; border-radius:50%; background:var(--brand); }
+.cal-start.cal-anchor::after, .cal-end.cal-anchor::after, .cal-single.cal-anchor::after { display:none; }
+.cal-start { background:var(--brand); color:#fff; border-radius:50% 0 0 50%; box-shadow:0 2px 6px oklch(0.42 0.11 155 / .35); }
+.cal-end { background:var(--brand); color:#fff; border-radius:0 50% 50% 0; box-shadow:0 2px 6px oklch(0.42 0.11 155 / .35); }
+.cal-single { background:var(--brand); color:#fff; border-radius:50%; box-shadow:0 2px 8px oklch(0.42 0.11 155 / .4); }
+.cal-start:hover, .cal-end:hover, .cal-single:hover { filter:brightness(.95); }
+.cal-between { background:oklch(0.42 0.11 155 / .10); border-radius:0; transition:background .18s ease; }
+.cal-between:hover { background:oklch(0.42 0.11 155 / .16); }
+.cal-foot { display:flex; align-items:center; gap:8px; margin-top:12px; padding-top:10px; border-top:1px solid oklch(0.95 0 0); }
+.cal-foot button { border:none; background:none; color:var(--brand); font-size:12px; font-weight:600; cursor:pointer; padding:4px 8px; border-radius:8px; transition:background .18s ease; }
+.cal-foot button:hover { background:oklch(0.42 0.11 155 / .10); }
 .cal-hint { font-size:11px; color:var(--ink-faint); }
+@media (prefers-reduced-motion: reduce) {
+  .cal-panel.cal-open, .cal-grid.cal-fade, .cal-grid.cal-slide-left, .cal-grid.cal-slide-right { animation:none !important; }
+}
+@keyframes calIn { from { opacity:0; transform:translateY(-10px) scale(.96); } to { opacity:1; transform:none; } }
+@keyframes calFade { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:none; } }
+@keyframes calLeft { from { opacity:0; transform:translateX(-16px); } to { opacity:1; transform:none; } }
+@keyframes calRight { from { opacity:0; transform:translateX(16px); } to { opacity:1; transform:none; } }
 </style>
 </head>
 <body>
@@ -311,7 +330,6 @@ footer .row { display:flex; justify-content:space-between; gap:20px; flex-wrap:w
           </div>
         </div>
       </div>
-      <span class="hint" id="dateHint">数据日期 2026/10/14 · 近1天</span>
       <input type="text" id="q" placeholder="搜索店铺名称…" aria-label="搜索店铺">
       <div class="filters" id="stateFilters">
         <button class="f-btn active" data-state="all">全部</button>
@@ -678,7 +696,6 @@ const calClear = document.getElementById('calClear');
 const calHint = document.getElementById('calHint');
 const tableWrap = document.getElementById('tableWrap');
 const emptyDate = document.getElementById('emptyDate');
-const dateHint = document.getElementById('dateHint');
 const statTotal = document.getElementById('statTotal');
 const statFirst = document.getElementById('statFirst');
 const statStrong = document.getElementById('statStrong');
@@ -722,16 +739,12 @@ function showEmpty(dateOrRange, kind) {
   statStrong.textContent = 0;
   if (kind === 'archived') {
     emptyDate.innerHTML = '<b>' + dateOrRange + '</b> 暂无榜单数据 — 历史榜单已归档，深度分析见「爆款记录」（第1期高客单甄选、第2期五店深度拆解）。';
-    dateHint.textContent = '数据日期 ' + hintDate(dateOrRange) + ' · 数据已归档';
   } else if (kind === 'pending') {
     emptyDate.innerHTML = '<b>' + dateOrRange + '</b> 暂无榜单数据 — 今日榜单尚未抓取，抓取后自动展示。';
-    dateHint.textContent = '数据日期 ' + hintDate(dateOrRange) + ' · 今日榜单尚未抓取';
   } else if (kind === 'range') {
     emptyDate.innerHTML = '<b>' + hintDate(dateOrRange) + '</b> 区间内暂无榜单数据 — 可切换「今天 / 昨天」或选择其他日期。';
-    dateHint.textContent = '区间 ' + hintDate(dateOrRange) + ' · 无数据';
   } else {
     emptyDate.innerHTML = '<b>' + dateOrRange + '</b> 暂无榜单数据 — 该日期未存档，可切换「今天 / 昨天」或选择其他日期。';
-    dateHint.textContent = '数据日期 ' + hintDate(dateOrRange) + ' · 无数据';
   }
 }
 function renderDate(date) {
@@ -747,7 +760,6 @@ function renderDate(date) {
     statTotal.textContent = ds.shops.length;
     statFirst.textContent = ds.shops.filter(x => x.state === 'first').length;
     statStrong.textContent = ds.shops.filter(x => x.state === 'strong').length;
-    dateHint.textContent = '数据日期 ' + hintDate(date) + ' · ' + (ds.periodLabel || '近1天');
   } else if (ds && ds.archived) {
     showEmpty(date, 'archived');
   } else if (ds) {
@@ -769,7 +781,6 @@ function renderRange(s, e) {
   }
   if (dates.length === 1) {
     renderDate(dates[0]);
-    dateHint.textContent = '数据日期 ' + hintDate(dates[0]) + ' · ' + (DATE_SHOPS[dates[0]].periodLabel || '近1天') + '（区间 ' + hintDate(s) + ' ~ ' + hintDate(e) + '）';
     return;
   }
   // 区间覆盖多个数据日：按店名并集，保留区间内最新记录
@@ -785,17 +796,17 @@ function renderRange(s, e) {
   statTotal.textContent = merged.length;
   statFirst.textContent = merged.filter(x => x.state === 'first').length;
   statStrong.textContent = merged.filter(x => x.state === 'strong').length;
-  dateHint.textContent = '区间 ' + hintDate(s) + ' ~ ' + hintDate(e) + ' · 合并 ' + dates.length + ' 个数据日（' + merged.length + ' 家）';
   apply();
 }
 timeBtns.forEach(b => b.addEventListener('click', () => {
   selStart = selEnd = null;
   dateBtn.textContent = '📅 ' + b.dataset.date;
   calPanel.style.display = 'none';
+  calPanel.classList.remove('cal-open');
   renderDate(b.dataset.date);
 }));
 
-/* ---------- 点选式范围日历 ---------- */
+/* ---------- 点选式范围日历（v12 动画版） ---------- */
 const CAL_ANCHOR = '2026-10-14';
 let calYear = parseInt(CAL_ANCHOR.slice(0, 4), 10);
 let calMonth = parseInt(CAL_ANCHOR.slice(5, 7), 10);
@@ -804,7 +815,12 @@ let selEnd = null;
 
 function calTitleText() { return calYear + '年' + calMonth + '月'; }
 function daysInMonth(y, m) { return new Date(y, m, 0).getDate(); }
-function renderCal() {
+function renderCal(dir) {
+  dir = dir || 'fade';
+  const animCls = dir === 'left' ? 'cal-slide-left' : dir === 'right' ? 'cal-slide-right' : 'cal-fade';
+  calGrid.classList.remove('cal-slide-left', 'cal-slide-right', 'cal-fade');
+  void calGrid.offsetWidth;
+  calGrid.classList.add(animCls);
   calTitle.textContent = calTitleText();
   calGrid.innerHTML = '';
   const firstDow = new Date(calYear, calMonth - 1, 1).getDay(); // 周日=0
@@ -819,9 +835,10 @@ function renderCal() {
   for (let i = 1; cells.length < 42; i++) cells.push({ y: calYear, m: calMonth + 1, d: i, out: true });
   for (const c of cells) {
     const iso = isoOf(c.y, c.m, c.d);
+    const dow = new Date(c.y, c.m - 1, c.d).getDay();
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'cal-day' + (c.out ? ' cal-out' : '');
+    btn.className = 'cal-day' + (c.out ? ' cal-out' : '') + ((!c.out && (dow === 0 || dow === 6)) ? ' cal-wknd' : '');
     btn.textContent = c.d;
     if (!c.out && iso === CAL_ANCHOR) btn.classList.add('cal-anchor');
     if (selStart && !selEnd) {
@@ -840,7 +857,7 @@ function renderCal() {
         if (selEnd < selStart) { const t = selStart; selStart = selEnd; selEnd = t; }
         applyCalendar();
       }
-      renderCal();
+      renderCal('fade');
     });
     calGrid.appendChild(btn);
   }
@@ -850,20 +867,30 @@ function applyCalendar() {
   if (s) {
     dateBtn.textContent = '📅 ' + (s === e ? s : s + ' ~ ' + e);
     calPanel.style.display = 'none';
+    calPanel.classList.remove('cal-open');
     renderRange(s, e);
   }
 }
 dateBtn.addEventListener('click', () => {
   const show = calPanel.style.display === 'none';
-  calPanel.style.display = show ? '' : 'none';
-  if (show) renderCal();
+  if (show) {
+    calPanel.style.display = '';
+    calPanel.classList.remove('cal-open');
+    void calPanel.offsetWidth;
+    calPanel.classList.add('cal-open');
+    renderCal('fade');
+  } else {
+    calPanel.style.display = 'none';
+    calPanel.classList.remove('cal-open');
+  }
 });
-calPrev.addEventListener('click', () => { calMonth--; if (calMonth < 1) { calMonth = 12; calYear--; } renderCal(); });
-calNext.addEventListener('click', () => { calMonth++; if (calMonth > 12) { calMonth = 1; calYear++; } renderCal(); });
+calPrev.addEventListener('click', () => { calMonth--; if (calMonth < 1) { calMonth = 12; calYear--; } renderCal('left'); });
+calNext.addEventListener('click', () => { calMonth++; if (calMonth > 12) { calMonth = 1; calYear++; } renderCal('right'); });
 calClear.addEventListener('click', () => {
   selStart = selEnd = null;
   dateBtn.textContent = '📅 ' + CAL_ANCHOR;
   calPanel.style.display = 'none';
+  calPanel.classList.remove('cal-open');
   renderDate(CAL_ANCHOR);
 });
 calHint.textContent = '点一下选开始日（半圆），再点一下选结束日（整圆）';
