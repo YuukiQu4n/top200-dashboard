@@ -278,7 +278,6 @@ footer .row { display:flex; justify-content:space-between; gap:20px; flex-wrap:w
 .cal-foot { display:flex; align-items:center; gap:8px; margin-top:12px; padding-top:10px; border-top:1px solid oklch(0.95 0 0); }
 .cal-foot button { border:none; background:none; color:var(--brand); font-size:12px; font-weight:600; cursor:pointer; padding:4px 8px; border-radius:8px; transition:background .18s ease; }
 .cal-foot button:hover { background:oklch(0.42 0.11 155 / .10); }
-.cal-hint { font-size:11px; color:var(--ink-faint); }
 @media (prefers-reduced-motion: reduce) {
   .cal-panel.cal-open, .cal-grid.cal-fade, .cal-grid.cal-slide-left, .cal-grid.cal-slide-right { animation:none !important; }
 }
@@ -326,7 +325,7 @@ footer .row { display:flex; justify-content:space-between; gap:20px; flex-wrap:w
             <div class="cal-head"><button id="calPrev" type="button" aria-label="上一月">‹</button><span class="cal-title" id="calTitle">2026年10月</span><button id="calNext" type="button" aria-label="下一月">›</button></div>
             <div class="cal-week"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
             <div class="cal-grid" id="calGrid"></div>
-            <div class="cal-foot"><button id="calClear" type="button">清除选择</button><span class="cal-hint" id="calHint">点一下选开始日，再点一下选结束日</span></div>
+            <div class="cal-foot"><button id="calClear" type="button">清除选择</button></div>
           </div>
         </div>
       </div>
@@ -693,7 +692,6 @@ const calTitle = document.getElementById('calTitle');
 const calPrev = document.getElementById('calPrev');
 const calNext = document.getElementById('calNext');
 const calClear = document.getElementById('calClear');
-const calHint = document.getElementById('calHint');
 const tableWrap = document.getElementById('tableWrap');
 const emptyDate = document.getElementById('emptyDate');
 const statTotal = document.getElementById('statTotal');
@@ -893,7 +891,6 @@ calClear.addEventListener('click', () => {
   calPanel.classList.remove('cal-open');
   renderDate(CAL_ANCHOR);
 });
-calHint.textContent = '点一下选开始日（半圆），再点一下选结束日（整圆）';
 renderDate(DEFAULT_DATE);
 
 /* ---------- 页2 爆款记录日历 ---------- */
