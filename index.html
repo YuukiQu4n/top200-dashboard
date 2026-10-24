@@ -349,7 +349,8 @@ footer .row { display:flex; justify-content:space-between; gap:20px; flex-wrap:w
       <div class="cat-cascader">
         <button class="f-btn" id="catTrigger">行业类目：全部</button>
         <div class="cat-panel" id="catPanel" style="display:none;">
-          <div class="cat-panel-head">榜单数据日 · <b>2026-10-23</b> · 近1天（滋补保健 24 细分类）</div>
+          <div class="cat-panel-head" id="catPanelHead" style="display:none;"></div>
+          <div class="cat-panel-head cat-empty" id="catEmpty" style="display:none;padding:10px 14px;font-size:13px;color:#8a8f98;">该日期暂无细分类数据</div>
           <div class="cat-cols">
             <div class="cat-col" id="catCol0"></div>
             <div class="cat-col" id="catCol1"></div>
@@ -966,8 +967,8 @@ function makeRow(sh, date) {
 }
 
 /* ---------- 类目筛选（罗盘式级联：点开一层一层选） ---------- */
-const CAT_DATE = '2026-10-23'; // 类目榜单数据日
-const CAT_SHOPS = {
+const CAT_SHOPS_BY_DATE = {
+  '2026-10-23': {
   other_hf: [{"rank": 1, "prev_raw": "3", "prev": 3, "name": "雾浮汀保健品专营店", "pay": "¥50万 - ¥75万", "orders": "1万 - 2.5万", "expose": "2.5万 - 5万", "price": "¥0 - ¥250", "click": "1,000 - 2,500", "buyers": "1万 - 2.5万", "state": "normal"},
     {"rank": 2, "prev_raw": "", "prev": null, "name": "钙尔奇官方旗舰店", "pay": "¥50万 - ¥75万", "orders": "2,500 - 5,000", "expose": "10万 - 25万", "price": "¥0 - ¥250", "click": "1万 - 2.5万", "buyers": "2,500 - 5,000", "state": "normal"},
     {"rank": 3, "prev_raw": "2", "prev": 2, "name": "哈药官方旗舰店", "pay": "¥25万 - ¥50万", "orders": "2,500 - 5,000", "expose": "25万 - 50万", "price": "¥0 - ¥250", "click": "1万 - 2.5万", "buyers": "1,000 - 2,500", "state": "normal"},
@@ -4694,15 +4695,18 @@ const CAT_SHOPS = {
     {"rank": 197, "prev_raw": "", "prev": null, "name": "IMIKKO海外旗舰店", "pay": "¥0 - ¥250", "orders": "0 - 25", "expose": "100 - 250", "price": "¥0 - ¥250", "click": "0 - 50", "buyers": "0 - 25", "state": "normal"},
     {"rank": 198, "prev_raw": "5", "prev": 5, "name": "快马体育运动装备", "pay": "¥0 - ¥250", "orders": "0 - 25", "expose": "250 - 500", "price": "¥0 - ¥250", "click": "0 - 50", "buyers": "0 - 25", "state": "normal"},
     {"rank": 199, "prev_raw": "", "prev": null, "name": "妍锦甄选", "pay": "¥0 - ¥250", "orders": "0 - 25", "expose": "100 - 250", "price": "¥0 - ¥250", "click": "0 - 50", "buyers": "0 - 25", "state": "normal"},
-    {"rank": 200, "prev_raw": "5", "prev": 5, "name": "轻米营养膳食专营店", "pay": "¥0 - ¥250", "orders": "0 - 25", "expose": "500 - 750", "price": "¥0 - ¥250", "click": "0 - 50", "buyers": "0 - 25", "state": "normal"}],
+    {"rank": 200, "prev_raw": "5", "prev": 5, "name": "轻米营养膳食专营店", "pay": "¥0 - ¥250", "orders": "0 - 25", "expose": "500 - 750", "price": "¥0 - ¥250", "click": "0 - 50", "buyers": "0 - 25", "state": "normal"}]
+  }
 };
 
+let catActiveDate = null;
 let catFilter = 'all';
 function renderCat(cat) {
   if (!cat || cat === 'all') { renderDate(currentDate); return; }
-  const list = CAT_SHOPS[cat] || [];
-  if (!list.length) { tbody.innerHTML = ''; rows = []; statTotal.textContent = 0; count.textContent = '该类目暂无榜单数据 · 数据日 2026-10-23'; return; }
-  tbody.innerHTML = list.map(sh => makeRow(sh, CAT_DATE)).join('');
+  const day = CAT_SHOPS_BY_DATE[catActiveDate] || {};
+  const list = day[cat] || [];
+  if (!list.length) { tbody.innerHTML = ''; rows = []; statTotal.textContent = 0; count.textContent = '该类目暂无榜单数据 · 数据日 ' + catActiveDate; return; }
+  tbody.innerHTML = list.map(sh => makeRow(sh, catActiveDate)).join('');
   rows = Array.from(tbody.querySelectorAll('tr'));
   statTotal.textContent = list.length;
   apply();
@@ -4751,7 +4755,21 @@ const CAT_TREE = [
 const catTrigger = document.getElementById('catTrigger');
 const catPanel = document.getElementById('catPanel');
 const catCols = [0,1,2,3,4].map(i => document.getElementById('catCol' + i));
+const catPanelHead = document.getElementById('catPanelHead');
+const catEmpty = document.getElementById('catEmpty');
 let catSel = [];
+function syncCatPanel(date) {
+  catActiveDate = date;
+  catFilter = 'all';
+  catTrigger.textContent = '行业类目：全部';
+  const dayData = date ? (CAT_SHOPS_BY_DATE[date] || null) : null;
+  const hasCat = !!dayData && Object.keys(dayData).length > 0;
+  catPanelHead.style.display = hasCat ? '' : 'none';
+  catPanelHead.innerHTML = hasCat ? '近1天 · <b>' + date + '</b>' : '';
+  catEmpty.style.display = hasCat ? 'none' : '';
+  if (!hasCat) { for (let i = 0; i < 5; i++) catCols[i].innerHTML = ''; }
+  else if (catPanel.style.display === 'block') { openCatPanel(); }
+}
 function nodeAt(path) {
   let nodes = CAT_TREE, node = null;
   for (const idx of path) { node = nodes[idx]; if (!node) return null; nodes = node.sub || []; }
@@ -4770,8 +4788,17 @@ function renderCol(colEl, items, activeIdx) {
 function openCatPanel() {
   catPanel.style.display = 'block';
   catSel = [];
-  renderCol(catCols[0], CAT_TREE, -1);
-  for (let i = 1; i < 5; i++) catCols[i].innerHTML = '';
+  const dayData = catActiveDate ? (CAT_SHOPS_BY_DATE[catActiveDate] || null) : null;
+  const hasCat = !!dayData && Object.keys(dayData).length > 0;
+  catPanelHead.style.display = hasCat ? '' : 'none';
+  catPanelHead.innerHTML = hasCat ? '近1天 · <b>' + catActiveDate + '</b>' : '';
+  catEmpty.style.display = hasCat ? 'none' : '';
+  if (hasCat) {
+    renderCol(catCols[0], CAT_TREE, -1);
+    for (let i = 1; i < 5; i++) catCols[i].innerHTML = '';
+  } else {
+    for (let i = 0; i < 5; i++) catCols[i].innerHTML = '';
+  }
 }
 function closeCatPanel() { catPanel.style.display = 'none'; }
 function selectCat(key, label) {
@@ -4781,15 +4808,16 @@ function selectCat(key, label) {
     catTrigger.textContent = '行业类目：' + label;
     tbody.innerHTML = ''; rows = [];
     statTotal.textContent = 0;
-    count.textContent = '「' + label + '」暂无榜单数据 · 数据日 2026-10-23';
+    count.textContent = '「' + label + '」暂无榜单数据 · 数据日 ' + catActiveDate;
     return;
   }
   catFilter = key || 'all';
   catTrigger.textContent = '行业类目：' + (key ? label : '全部');
   if (catFilter === 'all') { renderCat('all'); return; }
-  const list = CAT_SHOPS[key];
+  const day = CAT_SHOPS_BY_DATE[catActiveDate] || {};
+  const list = day[key];
   if (list && list.length) { renderCat(key); }
-  else { tbody.innerHTML = ''; rows = []; statTotal.textContent = 0; count.textContent = '「' + label + '」暂无榜单数据 · 数据日 2026-10-23'; }
+  else { tbody.innerHTML = ''; rows = []; statTotal.textContent = 0; count.textContent = '「' + label + '」暂无榜单数据 · 数据日 ' + catActiveDate; }
 }
 catTrigger.addEventListener('click', (e) => {
   e.stopPropagation();
@@ -4835,6 +4863,7 @@ function showEmpty(dateOrRange, kind) {
 }
 function renderDate(date) {
   currentDate = date;
+  syncCatPanel(date);
   timeBtns.forEach(b => b.classList.toggle('active', b.dataset.date === date));
   const ds = DATE_SHOPS[date];
   const hasShops = !!ds && Array.isArray(ds.shops) && ds.shops.length > 0;
@@ -4861,6 +4890,7 @@ function renderRange(s, e) {
     .filter(d => d >= s && d <= e).sort();
   if (dates.length === 0) {
     currentDate = null;
+    syncCatPanel(null);
     timeBtns.forEach(b => b.classList.toggle('active', false));
     showEmpty(s + ' ~ ' + e, 'range');
     return;
@@ -4871,6 +4901,7 @@ function renderRange(s, e) {
   }
   // 区间覆盖多个数据日：按店名并集，保留区间内最新记录
   currentDate = null;
+  syncCatPanel(null);
   timeBtns.forEach(b => b.classList.toggle('active', false));
   const byName = {};
   for (const d of dates) for (const sh of DATE_SHOPS[d].shops) byName[sh.name] = sh;
