@@ -350,7 +350,6 @@ footer .row { display:flex; justify-content:space-between; gap:20px; flex-wrap:w
         <button class="f-btn" id="catTrigger">行业类目：全部</button>
         <div class="cat-panel" id="catPanel" style="display:none;">
           <div class="cat-panel-head" id="catPanelHead" style="display:none;"></div>
-          <div class="cat-panel-head cat-empty" id="catEmpty" style="display:none;padding:10px 14px;font-size:13px;color:#8a8f98;">该日期暂无细分类数据</div>
           <div class="cat-cols">
             <div class="cat-col" id="catCol0"></div>
             <div class="cat-col" id="catCol1"></div>
@@ -919,7 +918,7 @@ sbtns.forEach(b => b.addEventListener('click', () => {
 input.addEventListener('input', apply);
 
 /* ---------- 时间筛选（今天 / 昨天 / 点选式范围日历） ---------- */
-const DEFAULT_DATE = '2026-10-22';
+const DEFAULT_DATE = '2026-10-23';
 let currentDate = DEFAULT_DATE;
 const timeBtns = Array.from(document.querySelectorAll('#timeFilters .time-btn'));
 const dateBtn = document.getElementById('dateBtn');
@@ -4705,7 +4704,7 @@ function renderCat(cat) {
   if (!cat || cat === 'all') { renderDate(currentDate); return; }
   const day = CAT_SHOPS_BY_DATE[catActiveDate] || {};
   const list = day[cat] || [];
-  if (!list.length) { tbody.innerHTML = ''; rows = []; statTotal.textContent = 0; count.textContent = '该类目暂无榜单数据 · 数据日 ' + catActiveDate; return; }
+  if (!list.length) { tbody.innerHTML = ''; rows = []; statTotal.textContent = 0; count.textContent = ''; return; }
   tbody.innerHTML = list.map(sh => makeRow(sh, catActiveDate)).join('');
   rows = Array.from(tbody.querySelectorAll('tr'));
   statTotal.textContent = list.length;
@@ -4756,7 +4755,6 @@ const catTrigger = document.getElementById('catTrigger');
 const catPanel = document.getElementById('catPanel');
 const catCols = [0,1,2,3,4].map(i => document.getElementById('catCol' + i));
 const catPanelHead = document.getElementById('catPanelHead');
-const catEmpty = document.getElementById('catEmpty');
 let catSel = [];
 function syncCatPanel(date) {
   catActiveDate = date;
@@ -4766,7 +4764,6 @@ function syncCatPanel(date) {
   const hasCat = !!dayData && Object.keys(dayData).length > 0;
   catPanelHead.style.display = hasCat ? '' : 'none';
   catPanelHead.innerHTML = hasCat ? '近1天 · <b>' + date + '</b>' : '';
-  catEmpty.style.display = hasCat ? 'none' : '';
   if (!hasCat) { for (let i = 0; i < 5; i++) catCols[i].innerHTML = ''; }
   else if (catPanel.style.display === 'block') { openCatPanel(); }
 }
@@ -4792,7 +4789,6 @@ function openCatPanel() {
   const hasCat = !!dayData && Object.keys(dayData).length > 0;
   catPanelHead.style.display = hasCat ? '' : 'none';
   catPanelHead.innerHTML = hasCat ? '近1天 · <b>' + catActiveDate + '</b>' : '';
-  catEmpty.style.display = hasCat ? 'none' : '';
   if (hasCat) {
     renderCol(catCols[0], CAT_TREE, -1);
     for (let i = 1; i < 5; i++) catCols[i].innerHTML = '';
@@ -4808,7 +4804,7 @@ function selectCat(key, label) {
     catTrigger.textContent = '行业类目：' + label;
     tbody.innerHTML = ''; rows = [];
     statTotal.textContent = 0;
-    count.textContent = '「' + label + '」暂无榜单数据 · 数据日 ' + catActiveDate;
+    count.textContent = '';
     return;
   }
   catFilter = key || 'all';
@@ -4817,7 +4813,7 @@ function selectCat(key, label) {
   const day = CAT_SHOPS_BY_DATE[catActiveDate] || {};
   const list = day[key];
   if (list && list.length) { renderCat(key); }
-  else { tbody.innerHTML = ''; rows = []; statTotal.textContent = 0; count.textContent = '「' + label + '」暂无榜单数据 · 数据日 ' + catActiveDate; }
+  else { tbody.innerHTML = ''; rows = []; statTotal.textContent = 0; count.textContent = ''; }
 }
 catTrigger.addEventListener('click', (e) => {
   e.stopPropagation();
@@ -4924,7 +4920,7 @@ timeBtns.forEach(b => b.addEventListener('click', () => {
 }));
 
 /* ---------- 点选式范围日历（v12 动画版） ---------- */
-const CAL_ANCHOR = '2026-10-22';
+const CAL_ANCHOR = '2026-10-23';
 let calYear = parseInt(CAL_ANCHOR.slice(0, 4), 10);
 let calMonth = parseInt(CAL_ANCHOR.slice(5, 7), 10);
 let selStart = null;
