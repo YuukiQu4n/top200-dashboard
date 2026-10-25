@@ -117,8 +117,8 @@ section { padding: 56px 0; }
 
 /* 可抄选品 */
 .pick-toolbar { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom: 22px; }
-.filters { display:flex; gap:8px; flex-wrap:wrap; }
-.f-btn { position:relative; overflow:hidden; padding:8px 16px; border-radius:999px; border:1px solid var(--line); background:oklch(1 0 0 / 0.8); color:var(--ink-soft); font-size:13px; font-family:inherit; cursor:pointer; transition: transform .18s var(--ease), box-shadow .22s ease, background .3s ease, color .3s ease, border-color .3s ease; }
+.filters { display:flex; gap:10px; flex-wrap:wrap; }
+.f-btn { position:relative; overflow:hidden; padding:9px 18px; border-radius:999px; border:1px solid var(--line); background:oklch(1 0 0 / 0.8); color:var(--ink-soft); font-size:13px; font-family:inherit; cursor:pointer; transition: transform .18s var(--ease), box-shadow .22s ease, background .3s ease, color .3s ease, border-color .3s ease; }
 .f-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px oklch(0.3 0.02 160 / 0.12); border-color: var(--brand); color: var(--brand); }
 .f-btn:active { transform: scale(.94); }
 .f-btn.active { background: var(--brand); border-color: var(--brand); color: oklch(1 0 0); font-weight:600; box-shadow: 0 6px 18px oklch(0.42 0.11 155 / 0.35); }
@@ -144,13 +144,13 @@ section { padding: 56px 0; }
 .pick-sub { color: var(--ink-faint); font-size:13px; margin-bottom:20px; }
 
 /* ranking table */
-.toolbar { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:18px; }
+.toolbar { display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:24px; }
 .toolbar input { flex:1; min-width:180px; max-width:340px; padding:10px 16px; border-radius:12px; border:1px solid var(--line); background:oklch(1 0 0 / 0.8); font-size:14px; font-family:inherit; outline:none; transition: border .2s, box-shadow .2s, transform .15s ease; }
 .toolbar input:focus { border-color: var(--brand); box-shadow: 0 0 0 4px oklch(0.42 0.11 155 / 0.12); }
 .toolbar .hint { font-size:12px; color:var(--ink-faint); }
 table.list { width:100%; border-collapse:collapse; background:oklch(1 0 0 / 0.72); border-radius: var(--radius); overflow:hidden; box-shadow: var(--shadow); font-size:13px; }
 table.list th { text-align:left; padding:14px 16px; font-size:11.5px; letter-spacing:0.08em; color:var(--ink-faint); font-weight:600; background: oklch(0.97 0.006 160); white-space:nowrap; }
-table.list td { padding:12px 16px; border-top:1px solid var(--line); color:var(--ink-soft); white-space:nowrap; }
+table.list td { padding:13px 16px; border-top:1px solid var(--line); color:var(--ink-soft); white-space:nowrap; }
 table.list tbody tr { transition: background .2s ease; }
 table.list tbody tr:hover { background: oklch(0.97 0.006 160 / 0.6); }
 td.rank { font-weight:600; color:var(--ink); }
@@ -319,7 +319,7 @@ footer .row { display:flex; justify-content:space-between; gap:20px; flex-wrap:w
     <div class="wrap">
       <div class="kicker">抖音电商罗盘 · 滋补保健类目</div>
       <h1>TOP200 店铺榜单</h1>
-      <div class="data-mark">数据日期 · <b>2026-10-22</b> · 近1天</div>
+      <div class="data-mark">数据日期 · <b>2026-10-23</b> · 近1天</div>
       <div class="stats">
         <div class="stat"><div class="num"><span id="statTotal">200</span></div><div class="lab">在榜店铺</div></div>
         <div class="stat"><div class="num"><span id="statFirst">4</span></div><div class="lab">本期首现（上期无记录）</div></div>
@@ -332,7 +332,7 @@ footer .row { display:flex; justify-content:space-between; gap:20px; flex-wrap:w
     <div class="toolbar">
     
       <div class="cal-wrap">
-          <button class="f-date" id="dateBtn" type="button" aria-label="日期范围选择">📅 2026-10-22</button>
+          <button class="f-date" id="dateBtn" type="button" aria-label="日期范围选择">📅 2026-10-23</button>
           <div class="cal-panel" id="calPanel" style="display:none">
             <div class="cal-head"><button id="calPrev" type="button" aria-label="上一月">‹</button><span class="cal-title" id="calTitle">2026年10月</span><button id="calNext" type="button" aria-label="下一月">›</button></div>
             <div class="cal-week"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
@@ -342,10 +342,6 @@ footer .row { display:flex; justify-content:space-between; gap:20px; flex-wrap:w
         </div>
       </div>
       <input type="text" id="q" placeholder="搜索店铺名称…" aria-label="搜索店铺">
-      <div class="cat-cascader">
-        <button class="f-btn" id="catTrigger">行业类目：全部</button>
-        <div class="cat-panel" id="catPanel" style="display:none;">
-          <div class="cat-panel-head" id="catPanelHead" style="display:none;"></div>      <input type="text" id="q" placeholder="搜索店铺名称…" aria-label="搜索店铺">
       <div class="cat-cascader">
         <button class="f-btn" id="catTrigger">行业类目：全部</button>
         <div class="cat-panel" id="catPanel" style="display:none;">
@@ -4761,8 +4757,8 @@ function syncCatPanel(date) {
   catTrigger.textContent = '行业类目：全部';
   const dayData = date ? (CAT_SHOPS_BY_DATE[date] || null) : null;
   const hasCat = !!dayData && Object.keys(dayData).length > 0;
-  catPanelHead.style.display = hasCat ? '' : 'none';
-  catPanelHead.innerHTML = hasCat ? '近1天 · <b>' + date + '</b>' : '';
+  catPanelHead.style.display = 'none';
+  catPanelHead.innerHTML = '';
   if (!hasCat) { for (let i = 0; i < 5; i++) catCols[i].innerHTML = ''; }
   else if (catPanel.style.display === 'block') { openCatPanel(); }
 }
@@ -4786,8 +4782,8 @@ function openCatPanel() {
   catSel = [];
   const dayData = catActiveDate ? (CAT_SHOPS_BY_DATE[catActiveDate] || null) : null;
   const hasCat = !!dayData && Object.keys(dayData).length > 0;
-  catPanelHead.style.display = hasCat ? '' : 'none';
-  catPanelHead.innerHTML = hasCat ? '近1天 · <b>' + catActiveDate + '</b>' : '';
+  catPanelHead.style.display = 'none';
+  catPanelHead.innerHTML = '';
   if (hasCat) {
     renderCol(catCols[0], CAT_TREE, -1);
     for (let i = 1; i < 5; i++) catCols[i].innerHTML = '';
